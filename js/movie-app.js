@@ -1,11 +1,11 @@
 "use strict";
 
-{
+
     const getMovies = fetch("https://coconut-denim-leather.glitch.me/movies")
         .then(response => console.log(response.json()));
-}
+
     //Print JSON data to header
-    $("#button").click(function(getMovies){
+    $("#button").click(function (getMovies) {
         $(this).text(getMovies).val()
     });
 {
