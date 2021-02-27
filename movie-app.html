@@ -4,19 +4,34 @@
     <meta charset="UTF-8">
     <title>OurTube</title>
     <link rel="stylesheet" href="css/movie-app.css">
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-    <div>
-        <h1 id="test">Test</h1>
-        <label for="button"></label>
-        <button id="button" type="button" value="button" name="button">click here to test</button>
+    <div id="loadDiv">
+        <h1 id="loading">LOADING...</h1>
     </div>
-<script>
 
-    "use strict"
+    <div id="create">
+        <div class="createHeading">
+            <h3>Add Your Movie Here</h3>
+        </div>
+            <div>
+                <h4>Title</h4>
+                <label for="title"></label>
+                <input id="title" type="text" name="title" value="DOMString" placeholder="Your Movie Title">
+            </div>
+            <div>
+                <h4>Popcorns</h4>
+                <label for="popcorns"></label>
+                <input id="popcorns" type="text" name="popcorns" value="DOMString" placeholder="How many popcorns is this movie?">
+            </div>
+            <div>
+                <label for="button"></label>
+                <button id="button" type="button" value="button" name="button">Add you movie</button>
+            </div>
 
-</script>
+    </div>
+<script src="js/keys.js"></script>
 <script src="js/movie-app.js"></script>
 </body>
 </html>
