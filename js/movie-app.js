@@ -1,7 +1,7 @@
 "use strict";
 
 $(document).ready(function() {
-    const API = "https://coconut-denim-leather.glitch.me/movies"
+    const URL = "https://coconut-denim-leather.glitch.me/movies"
     let title = $("#title");
     let popcorns = $("#popcorns");
 })
