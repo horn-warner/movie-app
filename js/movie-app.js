@@ -9,6 +9,14 @@ $(document).ready(function() {
 //TEST IN CONSOLE
     const getMovies = fetch("https://coconut-denim-leather.glitch.me/movies")
         .then(response => console.log(response.json()));
+// menu 
+const menuToggle = document.querySelector('.toggle');
+const showcase = document.querySelector('.showcase');
+
+menuToggle.addEventListener('click', () => {
+    menuToggle.classList.toggle('active');
+    showcase.classList.toggle('active');
+})
 
     //Print JSON data to header
     // $("#button").click(function (getMovies) {
