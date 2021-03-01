@@ -1,14 +1,23 @@
 "use strict";
-// MAIN PAGE -
+
 $(document).ready(function() {
     const URL = "https://coconut-denim-leather.glitch.me/movies"
     let title = $("#title");
     let popcorns = $("#popcorns");
 })
-
 //TEST IN CONSOLE
+//     const getMovies = fetch("https://coconut-denim-leather.glitch.me/movies")
+//         .then(response => console.log(response.json()));
+
     const getMovies = fetch("https://coconut-denim-leather.glitch.me/movies")
-        .then(response => console.log(response.json()));
+        .then(response => response.json())
+        .catch(console.error);
+
+    const getMovie = fetch("https://coconut-denim-leather.glitch.me/movies")
+        .then(response => response.json())
+        .catch(console.error);
+
+
 // menu 
 const menuToggle = document.querySelector('.toggle');
 const showcase = document.querySelector('.showcase');
@@ -19,9 +28,35 @@ menuToggle.addEventListener('click', () => {
 })
 
 {
-    //Create - allow the user to add movie title and their rating
-    //$("#user-movie-button").click
-    //text from title text input and time-to-watch input(popcorn)
+
+    const addMovie = (movie) => fetch("https://coconut-denim-leather.glitch.me/movies", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(movie)
+    })
+        .then(res => res.json())
+        .then(data => {
+            console.log(${JSON.stringify(data)} + " has been created");
+            return data.id;
+        })
+        .catch(console.error);
+
+    // const editMovie =
+    const deleteMovie = id => fetch("https://coconut-denim-leather.glitch.me/movies", {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(res => res.json())
+        .then(() => {
+            console.log("deleted successfully");
+        })
+        .catch(console.error);
+
+
     $("#add-button").click(function () {
         postMovie({
             "title": $("#movie-title-input").val(),
@@ -29,79 +64,146 @@ menuToggle.addEventListener('click', () => {
         });
         refreshMovies();
     });
-}
 
-{
-    //Read
-}
+//$(document).ready(() => {
 
-{
-    //Update
-}
+                let mainContainer = () => {
+                    return $("main");
+                };
+                // let modalLabel = () => {
+                //     return $("#modalLabel");   ///MODAL FOR LOADING???
+                // };
 
-{
-    //Delete
-}
-/* On page load:
+                let titleInput = () => {
+                    return $("#titleInput");
+                };
 
-Display a "loading..." message Make an AJAX request to get a listing of all the movies When the initial AJAX request comes back,
-remove the "loading..." message and replace it with HTML generated from the json response your code receives.
+                let modalLabel = '';
+                let movieCard;
+                let allMovies = [];
+                // SELECTED EDITABLE MOVIE
+                let selectedTitle = '';
+                let selectedPopcorns;
 
-Allow users to add new movies
-Create a form for adding a new movie that has fields for the movie's title and rating When the form is submitted,
-the page should not reload / refresh, instead, your javascript should make a POST request to /movies with the information the user put into the form
 
-Allow users to edit existing movies
-Give users the option to edit an existing movie. A form should be pre-populated with the selected movie's details Like creating a movie,
-this should not involve any page reloads, instead your javascript code should make an ajax request when the form is submitted.
+                // $("main").html("loading...");
+                // Splash Loader
+                $("main").html(`<div id="loader-container"><img class="loaderImage" src="img/????????.gif"></div>`);
+                // $("#loadingSection").hide();
 
-Delete movies
-Each movie should have a "delete" button When this button is clicked, your javascript should send a DELETE request
+                const renderMovieList = (title, popcorns, id) => {
+                    let content = `<div class="card">`;
+                    content += `<div class="card-header" id="heading${id}">`;
+                    // content += `<div class="card-header" id="heading` + id + ">";
+                    content += `<h5 class="mb-0">`;
+                    content += `<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse${id}" aria-expanded="false" aria-controls="collapse${id}">`;
+                    content += `${title} - Popcorns: ${popcorns}`;
+                    content += `</button>`;
+                    content += `</h5>`;
+                    content += `</div>`;
+                    // content += `<div id="collapse${id}" class="collapse" aria-labelledby="heading${id}" data-parent="#accordian">`;
+                    content += `<div id="collapse${id}" class="collapse" aria-labelledby="heading${id}" data-parent="#myGroup">`;
+                    content += `<div class="movie-content-container card-body">`;
+                    content += `<div class="movie-description">
+I don't 'need' to drink. I can quit anytime I want! Do a flip! Wow! A superpowers drug you can just rub onto your skin? You'd think it would be something you'd have to freebase. Moving along… Now Fry, it's been a few years since medical school, so remind me. Disemboweling in your species: fatal or non-fatal?
+</div>`;
+                    content += `<button type="button" id="editButton-${id}" class="edit-button btn btn-warning btn-sm" data-toggle="modal" data-target="#modal">
+                    Edit
+                </button>`;
+                    content += `<button type="button" id="deleteButton-${id}" class="delete-button btn btn-danger btn-sm" data-toggle="modal" data-target="#modal">
+                    Delete
+                </button>`;
+                    content += `</div>`;
+                    content += `</div>`;
+                    content += `</div>`;
 
-Bonuses
-Add a disabled attribute to buttons while their corresponding ajax request is still pending.
-Show a loading animation instead of just text that says "loading...".
-Use modals for the creating and editing movie forms.
-Add a genre property to every movie.
-Allow users to sort the movies by rating, title, or genre (if you have it).
-Allow users to search through the movies by rating, title, or genre (if you have it).
-Use a free movie API like OMDB to include extra info or render movie posters.
+                    return content
+                };
 
-Helpful Hints:
-The id property of every movie should not be edited by hand. The purpose of this property is to uniquely identify that particular movie.
-That is, if we want to delete or modify an existing movie, we can specify what movie we want to change by referencing it's id.
-When a new movie is created (i.e. when you send a POST request to /movies with a title and a rating), the server will respond with the movie object that was created,
-including a generated id. Take a look at the other branches in this repository, as they have configuration/setup for common scenarios,
-such as including bootstrap in your application.*/
+                const renderList = (title = "All Your Movies") => {
+                    $('#splashImage').attr("src", loaderJumbotron);
+                    getMovies()
+                        .then((movieList) => {
+                            allMovies = movieList;
+                            console.log(allMovies);
+                            setTimeout(() => {
+                                mainContainer().html(title);
+                                mainContainer().append(`<div id="accordion">`);
+                                movieList.forEach(({title, popcorns, id}) => {
+                                    $("#accordion").append(renderMovieList(title, popcorns, id));
+                                });
+                                mainContainer().append(`</div>`);
+                                // Hide movie list for initial start fadeIn
+                                $("#loadingSection").fadeOut(2000);
+                                $("#myGroup").hide();
+                                $("#myGroup").fadeIn(2000);
 
-/*
-Casey Edwards  12:21
-@channel Helpful structural concepts here:
-To create this application, you need to
--Not worry about the visual aspect until your code itself is fleshed out!
--Create the CRUD functions (and make sure each thing you type works before adding another piece)
-(console.log)
--Call the CRUD functions
-(console.log)
--Use some jQuery/DOM to add and remove things from the screen
-(console.log)
--Create a form to allow the user to search!
-(console.log)
--Use some jQuery/DOM to allow the user to search
-(console.log)
--STYLE IT last
-(console.log)
-And whenever something goes wrong (it will)
-(console.log)
-(make sure you're using the methods like fetch, etc as is shown in documentation)
-(console.log)
-If THAT doesn't work, try this:
- -Isolate what exactly isn't working (the specific function)
- -Find the point in that code where things do work
- -SLOWLY, CAREFULLY add code back in, console logging with each small step until things break
- -When you find that breaking point, and each single piece before it worked -> that's probably where the issue is <-
- -Ask yourself if you called the method appropriately. Passed in the correct data type, returned the correct data type, called it in the correct place, etc.
- -If not, check the documentation, curriculum, and lecture notes. Chances are, you may have missed some smol detail!
-I'm a firm believer that complicated things can be accomplished if they are broken into easy tasks and we take a methodical approach to making sure each tiny piece works before moving on!
-SAVE THIS. PUT IT SOMEWHERE AND CONSTANTLY LOOK BACK AT IT WHEN YOU GET STUCK
- */
+                                $('#splashImage').attr("src", currentJumbotron);
+
+                                function editLabel() {
+                                    modalLabel = 'Edit Movie';
+                                    console.log(modalLabel);
+                                    movieCard = $(this).attr("id").split("-")[1];
+                                    for (let movie of allMovies) {
+                                        if (parseInt(movieCard) === movie.id) {
+                                            selectedTitle = movie.title;
+                                            selectedPopcorns = movie.popcorns;
+                                        }
+                                    }
+
+                                    $('#modalLabel').html(modalLabel);
+                                    $('.modalOne').html(`<form>
+                            <div class="form-group">
+                                <label for="titleInput" class="col-form-label">Title:</label>
+                                <input type="text" class="form-control" id="titleInput">
+                            </div>
+                            <div class="form-group">
+                                <label for="popcornsInput" class="col-form-label">Popcorns:</label>
+                                <input type="text" class="form-control" id="popcornsInput">
+                            </div>
+                        </form>`);
+                                    $('#saveInput').removeClass('btn-danger btn-success').addClass('btn-warning').html('Save Edit')
+                                    // modalLabel().html('Edit Movie')
+                                    $("#titleInput").val(selectedTitle);
+                                    $("#popcornsInput").val(selectedPopcorns);
+                                }
+
+                                $(".edit-button").click(editLabel);
+
+                                function deleteLabel() {
+                                    modalLabel = 'Delete Movie';
+                                    console.log(modalLabel);
+                                    movieCard = $(this).attr("id").split("-")[1];
+                                    console.log(movieCard);
+                                    $('#modalLabel').html(modalLabel);
+                                    // modalLabel().html('Edit Movie')
+                                    $('.modalOne').html("Are you sure you want to delete this movie?");
+                                    $('#saveInput').removeClass('btn-warning btn-success').addClass('btn-danger').html('Delete')
+                                }
+
+                                $(".delete-button").click(deleteLabel);
+                            }, 2000);
+                        })
+                        .catch((error) => {
+                            alert('There was an error.\nPlease check the console for more information.');
+                            console.log(error);
+                        });
+                };
+
+                renderList();
+
+                $('#addButton').click(() => {
+                    $('#modalLabel').html('Add Movie');
+                    $('.modalOne').html(`<form>
+                            <div class="form-group">
+                                <label for="titleInput" class="col-form-label">Title:</label>
+                                <input type="text" class="form-control" id="titleInput">
+                            </div>
+                            <div class="form-group">
+                                <label for="popcornsInput" class="col-form-label">Popcorns:</label>
+                                <input type="text" class="form-control" id="popcornsInput">
+                            </div>
+                        </form>`);
+                    $('#saveInput').removeClass('btn-warning btn-danger').addClass('btn-success').html('Post Movie');
+
+                });
