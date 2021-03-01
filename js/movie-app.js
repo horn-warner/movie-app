@@ -1,5 +1,5 @@
 "use strict";
-
+// MAIN PAGE -
 $(document).ready(function() {
     const URL = "https://coconut-denim-leather.glitch.me/movies"
     let title = $("#title");
@@ -18,15 +18,17 @@ menuToggle.addEventListener('click', () => {
     showcase.classList.toggle('active');
 })
 
-    //Print JSON data to header
-    // $("#button").click(function (getMovies) {
-    //     $(this).text(getMovies).val()
-    // });
 {
     //Create - allow the user to add movie title and their rating
     //$("#user-movie-button").click
     //text from title text input and time-to-watch input(popcorn)
-
+    $("#add-button").click(function () {
+        postMovie({
+            "title": $("#movie-title-input").val(),
+            "popcorns": $("#popcorns").val()
+        });
+        refreshMovies();
+    });
 }
 
 {
