@@ -22,11 +22,8 @@ const getMovies = fetch(`${URL}`)
         console.log(data)
     return data
     });
-
-
 const getAMovie = fetch(`${URL}`)
     .then(response => response.json())
-
 //CREATE STUFF
 const addMovie = (movie) => fetch(`${URL}`, {
     method: 'POST',
@@ -57,7 +54,7 @@ const editMovie = movie => fetch(`${URL}/${movie.id}`, {
     .catch(console.error);
 
 //DELETE
-const deleteMovie = id => fetch(`${URL}`, {
+const deleteMovie = id => fetch(`${URL}/${id}`, {
     method: 'DELETE',
     headers: {
         'Content-Type': 'application/json'
@@ -79,29 +76,76 @@ let selectedPopcorns;
 const buildMovieHtml = (title, popcorns, id) => {
     let content = `<div class="card">`;
     content += `<div class="card-header" id="heading${id}">`;
-    content += `<h5 class="mb-0">`;
-    content += `<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse${id}" aria-expanded="false" aria-controls="collapse${id}">`;
-    content += `${title} - Popcorns: ${popcorns}`;
-    content += `</button>`;
+    content += `<h5 class="mb-0">`
+    content += `${title} - Popcorns: ${popcorns}`
     content += `</h5>`;
     content += `</div>`;
-    content += `<div id="collapse${id}" class="collapse" aria-labelledby="heading${id}" data-parent="#myGroup">`;
+    content += `<div id="collapse${id}" class="" aria-labelledby="heading${id}" data-parent="#myGroup">`;
     content += `<div class="movie-content-container card-body">`;
     content += `<div class="movie-description">
-             I don't 'need' to drink. I can quit anytime I want! Do a flip! Wow! A superpowers drug you can just rub onto your skin? You'd think it would be something you'd have to freebase. Moving along… Now Fry, it's been a few years since medical school, so remind me. Disemboweling in your species: fatal or non-fatal?
+             I don't 'need' to drink. I can quit anytime I want! Do a flip! Wow! A superpowers drug you can just rub onto your skin? You'd think it would be 
+             something you'd have to freebase. Moving along… Now Fry, it's been a few years since medical school, so remind me. Disemboweling in your species: 
+             fatal or non-fatal?
 </div>`;
-    content += `<button type="button" id="editButton-${id}" class="edit-button btn btn-warning btn-sm" data-toggle="modal" data-target="#modal" data-value="${id}">
-                    Edit
-                </button>`;
-    content += `<button type="button" id="deleteButton-${id}" class="delete-button btn btn-danger btn-sm" data-toggle="modal" data-target="#modal">
+    content += `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Modal_${id}">
+    Edit
+</button>`;
+    content += `<button type="button" class="deleteButton" id="deleteButton-${id}" data-id="${id}" class="delete-button btn btn-danger btn-sm" data-toggle="modal" data-target="#modal">
                     Delete
                 </button>`;
     content += `</div>`;
     content += `</div>`;
     content += `</div>`;
+    content += generateModal(id, title, popcorns)
 
     return content
 };
+$("#addButton").click(function(event) {
+    event.preventDefault();
+    let popcornValue = $("#popcornVal").val();
+    let movieTitle = $("#title").val();
+
+    let movie = {title: movieTitle, popcorns: popcornValue, tags: "", description: ""}
+
+    addMovie(movie).then(r => console.log("Movie added"));
+})
+function setUpDeleteEventListener() {
+    $(".deleteButton").click(function (event) {
+        event.preventDefault();
+        var movieId = $(this).attr("data-id");
+        console.log("You selevted the movie with the id of " + movieId);
+        deleteMovie(movieId).then(r => console.log(r));
+
+    })
+}
+
+
+function generateModal(id, movieTitle, moviePopcorns) {
+
+    return `<div class="modal fade" id="Modal_${id}" tabindex="-1" aria-labelledby="ModalLabel_${id}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="ModalLabel_${id}">Edit ${movieTitle}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <input id="ModalInputMovieTitle_${id}" type="text" value="${movieTitle}">
+                                            <input type="number" min="1" max="5" value="${moviePopcorns}">
+                                            <input type="submit" value="makeChanges"> 
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" data-id="${id}" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`
+
+
+}
 
 const renderMovieList = () => {
     getMovies
@@ -109,6 +153,7 @@ const renderMovieList = () => {
             movieList.forEach(({title, popcorns, id}) => {
                 console.log(title)
                 $("#accordion").append(buildMovieHtml(title, popcorns, id));
+                setUpDeleteEventListener();
             });
             // $("#loadingSection").fadeOut(2000);
             // $("#myGroup").hide();
@@ -140,10 +185,7 @@ const renderMovieList = () => {
                 $("#titleInput").val(selectedTitle);
                 $("#popcornsInput").val(selectedPopcorns);
             }
-            //TODO: bring in bootstrap
-            //TODO: make the modal appear (ensure editButton is bound to modal)
-            //TODO: pass the data from the modal back to js
-            //TODO: update the record using editMovie
+
             //TODO: after record updated, need to clear movies on page then, use getMovies to put movies back on page
 
             $(".edit-button").click(editLabel);
