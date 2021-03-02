@@ -22,8 +22,6 @@ const getMovies = fetch(`${URL}`)
         console.log(data)
     return data
     });
-const getAMovie = fetch(`${URL}`)
-    .then(response => response.json())
 //CREATE STUFF
 const addMovie = (movie) => fetch(`${URL}`, {
     method: 'POST',
@@ -112,13 +110,18 @@ $("#addButton").click(function(event) {
 function setUpDeleteEventListener() {
     $(".deleteButton").click(function (event) {
         event.preventDefault();
-        var movieId = $(this).attr("data-id");
-        console.log("You selevted the movie with the id of " + movieId);
+        let movieId = $(this).attr("data-id");
+        console.log("You selected the movie with the id of " + movieId);
         deleteMovie(movieId).then(r => console.log(r));
 
     })
 }
-
+function editMovieEventListener() {
+    $(".btn btn-primary").click(function (event) {
+        event.preventDefault();
+        let
+    })
+}
 
 function generateModal(id, movieTitle, moviePopcorns) {
 
