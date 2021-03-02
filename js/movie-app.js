@@ -20,7 +20,7 @@ const getMovies = fetch(`${URL}`)
     .then(response => response.json())
     .then(data => {
         console.log(data)
-    return data
+        return data
     });
 //CREATE STUFF
 const addMovie = (movie) => fetch(`${URL}`, {
@@ -63,14 +63,18 @@ const deleteMovie = id => fetch(`${URL}/${id}`, {
         console.log("deleted successfully");
     })
     .catch(console.error);
-
+let popcornValue = $("#popcornVal").val();
+let movieTitle = $("#title").val();
 let modalLabel = '';
 let movieCard;
 let allMovies = [];
 // SELECTED EDITABLE MOVIE
+let movie = {title: movieTitle, popcorns: popcornValue, tags: "", description: ""}
 let selectedTitle = '';
-let selectedPopcorns;
-
+let selectedPopcorns = movie.popcorns;
+// let popcornValue = $("#popcornVal").val();
+// let movieTitle = $("#title").val();
+// let movie = {title: movieTitle, popcorns: popcornValue, tags: "", description: ""}
 const buildMovieHtml = (title, popcorns, id) => {
     let content = `<div class="card">`;
     content += `<div class="card-header" id="heading${id}">`;
@@ -85,7 +89,7 @@ const buildMovieHtml = (title, popcorns, id) => {
              something you'd have to freebase. Moving along… Now Fry, it's been a few years since medical school, so remind me. Disemboweling in your species: 
              fatal or non-fatal?
 </div>`;
-    content += `<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Modal_${id}">
+    content += `<button type="button" class="btn btn-primary" id="editButton-${id}" data-id="${id}"  data-bs-toggle="modal" data-bs-target="#Modal_${id}">
     Edit
 </button>`;
     content += `<button type="button" class="deleteButton" id="deleteButton-${id}" data-id="${id}" class="delete-button btn btn-danger btn-sm" data-toggle="modal" data-target="#modal">
@@ -98,7 +102,7 @@ const buildMovieHtml = (title, popcorns, id) => {
 
     return content
 };
-$("#addButton").click(function(event) {
+$("#addButton").click(function (event) {
     event.preventDefault();
     let popcornValue = $("#popcornVal").val();
     let movieTitle = $("#title").val();
@@ -107,6 +111,7 @@ $("#addButton").click(function(event) {
 
     addMovie(movie).then(r => console.log("Movie added"));
 })
+
 function setUpDeleteEventListener() {
     $(".deleteButton").click(function (event) {
         event.preventDefault();
@@ -116,15 +121,25 @@ function setUpDeleteEventListener() {
 
     })
 }
-function editMovieEventListener() {
-    $(".btn btn-primary").click(function (event) {
-        event.preventDefault();
-        let
-    })
+
+{
+    // $("#editButton").click(function (event) {
+    //     event.preventDefault();
+    //         getMovies.then(editMovie)
+    //             .then(resolve => resolve.json())
+    //             .then(data => console.log(`Edited ${JSON.stringify(data)}`))
+    // })
+                // = $(this).attr("data-id");
+
+        $('#saveInput').removeClass('btn-danger btn-success').addClass('btn-warning').html('Save Edit');
+        $("#titleInput").val(selectedTitle);
+        $("#popcornsInput").val(selectedPopcorns);
+        //
+        // // console.log("you have edited " + editTarget);
+        // editMovie(movie).then(r => console.log("Movie edited"));       //(r));
+
 }
-
 function generateModal(id, movieTitle, moviePopcorns) {
-
     return `<div class="modal fade" id="Modal_${id}" tabindex="-1" aria-labelledby="ModalLabel_${id}" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -157,12 +172,14 @@ const renderMovieList = () => {
                 console.log(title)
                 $("#accordion").append(buildMovieHtml(title, popcorns, id));
                 setUpDeleteEventListener();
+                // editMovieEventListener();
             });
             // $("#loadingSection").fadeOut(2000);
             // $("#myGroup").hide();
             // $("#myGroup").fadeIn(2000);
             // $('#splashImage').attr("src", currentJumbotron);
             allMovies = movieList;
+
             function editLabel() {
                 modalLabel = 'Edit Movie';
                 console.log(modalLabel);
