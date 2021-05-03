@@ -1,10 +1,10 @@
-"use strict";
-
+"use strict"
 
 const URL = "https://coconut-denim-leather.glitch.me/movies"
+//ALTERNATE - const URL = "https://%-%-%.glitch.me/movies"
 
-$("main").html(`<div id="loader-container"><img class="loaderImage" src="img/????????.gif"></div>`);
-// menu
+$("main").html(`<div id="loader-container"><../img class="loaderImage" src="img/????????.gif"></div>`);
+// MENU
 const addMenuToggle = () => {
     const menuToggle = document.querySelector('.toggle');
     const showcase = document.querySelector('.showcase');
@@ -15,59 +15,184 @@ const addMenuToggle = () => {
     })
 };
 addMenuToggle();
-//GET STUFF
+
+// GET A MOVIE
+const getMovie = id => fetch(`${url}/${id}`)
+    .then(res => res.json())
+    .catch(console.error);//GET A MOVIE
+
+// GET ALL MOVIES
 const getMovies = fetch(`${URL}`)
     .then(response => response.json())
     .then(data => {
         console.log(data)
         return data
     });
-//CREATE STUFF
-const addMovie = (movie) => fetch(`${URL}`, {
+
+// //ORIGINAL GET ALL MOVIES
+// const getMovies = () => fetch(url)
+//     .then(res => res.json())
+
+// CREATE
+const addMovie = (movie) => fetch(`${url}`, {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
     },
     body: JSON.stringify(movie)
 })
-    .then(response => response.json())
+    .then(res => res.json())
     .then(data => {
-        console.log(`${JSON.stringify(data)} has been created`);
-        return data.id;
+        console.log(`Success: created ${JSON.stringify(data)}`);
+        return data.id; // to access the primary key of the newly created entity
     })
     .catch(console.error);
+// //ORIGINAL CREATE
+// const addMovie = (movie) => fetch(`${URL}`, {
+//     method: 'POST',
+//     headers: {
+//         'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify(movie)
+// })
+//     .then(response => response.json())
+//     .then(data => {
+//         console.log(`${JSON.stringify(data)} has been created`);
+//         return data.id;
+//     })
+//     .catch(console.error);
+//
 
 //EDIT
-const editMovie = movie => fetch(`${URL}/${movie.id}`, {
+const editMovie = movie => fetch(`${url}/${movie.id}`, {
     method: 'PUT',
     headers: {
         'Content-Type': 'application/json',
     },
     body: JSON.stringify(movie)
 })
-    .then(response => response.json())
+    .then(res => res.json())
     .then(data => {
-        console.log(`${JSON.stringify(data)} has been edited`);
+        console.log(`Success: edited ${JSON.stringify(data)}`);
     })
     .catch(console.error);
+//ORIGINAL EDIT
+// const editMovie = movie => fetch(`${URL}/${movie.id}`, {
+//     method: 'PUT',
+//     headers: {
+//         'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(movie)
+// })
+//     .then(response => response.json())
+//     .then(data => {
+//         console.log(`${JSON.stringify(data)} has been edited`);
+//     })
+//     .catch(console.error);
+//
 
 //DELETE
-const deleteMovie = id => fetch(`${URL}/${id}`, {
+const deleteMovie = id => fetch(`${url}/${id}`, {
     method: 'DELETE',
     headers: {
         'Content-Type': 'application/json'
     }
 })
-    .then(response => response.json())
+    .then(res => res.json())
     .then(() => {
-        console.log("deleted successfully");
+        console.log(`Success: deleted ${id}`);
     })
     .catch(console.error);
+
+//   ===================================ORIGINAL CODE USED FOR PRESENTATION======================================
+// "use strict";
+//
+//
+// const URL = "https://coconut-denim-leather.glitch.me/movies"
+//
+// $("main").html(`<div id="loader-container"><img class="loaderImage" src="img/????????.gif"></div>`);
+// // menu
+// const addMenuToggle = () => {
+//     const menuToggle = document.querySelector('.toggle');
+//     const showcase = document.querySelector('.showcase');
+//
+//     menuToggle.addEventListener('click', () => {
+//         menuToggle.classList.toggle('active');
+//         showcase.classList.toggle('active');
+//     })
+// };
+// addMenuToggle();
+// //GET STUFF
+// const getMovies = fetch(`${URL}`)
+//     .then(response => response.json())
+//     .then(data => {
+//         console.log(data)
+//         return data
+//     });
+// //CREATE STUFF
+// const addMovie = (movie) => fetch(`${URL}`, {
+//     method: 'POST',
+//     headers: {
+//         'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify(movie)
+// })
+//     .then(response => response.json())
+//     .then(data => {
+//         console.log(`${JSON.stringify(data)} has been created`);
+//         return data.id;
+//     })
+//     .catch(console.error);
+//
+// //EDIT
+// const editMovie = movie => fetch(`${URL}/${movie.id}`, {
+//     method: 'PUT',
+//     headers: {
+//         'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(movie)
+// })
+//     .then(response => response.json())
+//     .then(data => {
+//         console.log(`${JSON.stringify(data)} has been edited`);
+//     })
+//     .catch(console.error);
+//
+// //DELETE
+// const deleteMovie = id => fetch(`${URL}/${id}`, {
+//     method: 'DELETE',
+//     headers: {
+//         'Content-Type': 'application/json'
+//     }
+// })
+//     .then(response => response.json())
+//     .then(() => {
+//         console.log("deleted successfully");
+//     })
+//     .catch(console.error);
 let popcornValue = $("#popcornVal").val();
 let movieTitle = $("#title").val();
 let modalLabel = '';
 let movieCard;
 let allMovies = [];
+//
+// async function () {
+//     (await getMovies)().then((movies) => {
+//         let movieHTML = '';
+//         $('#loading').hide();
+//         $("#addForm").show();
+//         movies.forEach(({id, title, rating}) => {  //Object Deconstruction
+//             movieHTML =
+//                 `<div class="card card-style card-color"><h1>${title}</h1><div class="d-flex row container"><p class="flex-grow-1 mt-1">Rating: ${rating}</p>
+//                         <div><button type="submit" data-index-number=${id} class="btn btn-style submit-edit" data-toggle="modal" data-target="#editModal">Edit</button>
+//                         <button type="submit" data-index-number=${id} class="btn btn-style m-1 submit-delete" data-toggle="modal" data-target="#deleteModal">Delete</button></div></div></div>`;
+//             $('#contain').append(movieHTML);
+//         });
+//     }).then(() => {
+//         addEditClickEvent();
+//         addDeleteClickEvent();
+//     });
+// }
 // SELECTED EDITABLE MOVIE
 let movie = {title: movieTitle, popcorns: popcornValue, tags: "", description: ""}
 let selectedTitle = '';
@@ -85,8 +210,8 @@ const buildMovieHtml = (title, popcorns, id) => {
     content += `<div id="collapse${id}" class="" aria-labelledby="heading${id}" data-parent="#myGroup">`;
     content += `<div class="movie-content-container card-body">`;
     content += `<div class="movie-description">
-             I don't 'need' to drink. I can quit anytime I want! Do a flip! Wow! A superpowers drug you can just rub onto your skin? You'd think it would be 
-             something you'd have to freebase. Moving along… Now Fry, it's been a few years since medical school, so remind me. Disemboweling in your species: 
+             I don't 'need' to drink. I can quit anytime I want! Do a flip! Wow! A superpowers drug you can just rub onto your skin? You'd think it would be
+             something you'd have to freebase. Moving along… Now Fry, it's been a few years since medical school, so remind me. Disemboweling in your species:
              fatal or non-fatal?
 </div>`;
     content += `<button type="button" class="btn btn-primary" id="editButton-${id}" data-id="${id}"  data-bs-toggle="modal" data-bs-target="#Modal_${id}">
@@ -151,7 +276,7 @@ function generateModal(id, movieTitle, moviePopcorns) {
                                         <form>
                                             <input id="ModalInputMovieTitle_${id}" type="text" value="${movieTitle}">
                                             <input type="number" min="1" max="5" value="${moviePopcorns}">
-                                            <input type="submit" value="makeChanges"> 
+                                            <input type="submit" value="makeChanges">
                                         </form>
                                     </div>
                                     <div class="modal-footer">
